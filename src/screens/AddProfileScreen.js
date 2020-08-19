@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet, Image} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+} from 'react-native';
 import {
   Container,
   Header,
@@ -45,25 +52,25 @@ class AddProfileScreen extends Component {
       uri: this.state.image.uri,
       type: this.state.image.type,
     });
-    console.log(token);
     this.props
       .dispatch(addProfile(formData, token))
       .then(async (res) => {
         console.log(res);
-        await Toast.show({
-          text: 'Success',
-          type: 'success',
-          position: 'top',
+        await Alert.alert('Add Profile', 'Success', [{text: 'Ok'}], {
+          cancelable: false,
         });
         this.props.navigation.replace('Home');
       })
       .catch((err) => {
         console.warn(JSON.stringify(err));
-        Toast.show({
-          text: err.message,
-          type: 'danger',
-          position: 'bottom',
-        });
+        Alert.alert(
+          'Add Profile',
+          'Something Wrong! I Can Feel It',
+          [{text: 'Ok'}],
+          {
+            cancelable: false,
+          },
+        );
       });
   };
   render() {

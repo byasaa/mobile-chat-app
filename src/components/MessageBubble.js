@@ -17,12 +17,12 @@ class MessageBubble extends React.Component {
           style={[
             styles.cloud,
             {
-              backgroundColor: this.props.mine ? '#dddddd' : '#F36162',
+              backgroundColor: this.props.mine ? '#F36162' : '#dddddd',
             },
           ]}>
           {this.props.image ? (
             <Image
-              style={{alignSelf: this.props.mine ? 'flex-start' : 'flex-end'}}
+              style={{alignSelf: this.props.mine ? 'flex-end' : 'flex-start'}}
               borderRadius={10}
               source={this.props.image}
             />
@@ -32,7 +32,7 @@ class MessageBubble extends React.Component {
               style={[
                 styles.text,
                 {
-                  color: this.props.mine ? 'black' : 'white',
+                  color: this.props.mine ? 'white' : 'black',
                 },
               ]}>
               {this.props.text}
@@ -42,11 +42,11 @@ class MessageBubble extends React.Component {
             style={[
               styles.arrow_container,
               this.props.mine
-                ? styles.arrow_left_container
-                : styles.arrow_right_container,
+                ? styles.arrow_right_container
+                : styles.arrow_left_container,
             ]}>
             <Svg
-              style={this.props.mine ? styles.arrow_left : styles.arrow_right}
+              style={this.props.mine ? styles.arrow_right : styles.arrow_left}
               width={moderateScale(15.5, 0.6)}
               height={moderateScale(17.5, 0.6)}
               viewBox="32.484 17.5 15.515 17.5"
@@ -54,10 +54,10 @@ class MessageBubble extends React.Component {
               <Path
                 d={
                   this.props.mine
-                    ? 'M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'
-                    : 'M48,35c-7-4-6-8.75-6-17.5C28,17.5,29,35,48,35z'
+                    ? 'M48,35c-7-4-6-8.75-6-17.5C28,17.5,29,35,48,35z'
+                    : 'M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z'
                 }
-                fill={this.props.mine ? '#dddddd' : '#F36162'}
+                fill={this.props.mine ? '#F36162' : '#dddddd'}
                 x="0"
                 y="0"
               />
@@ -77,11 +77,11 @@ const styles = StyleSheet.create({
     marginVertical: moderateScale(7, 2),
   },
   mine: {
-    marginLeft: 20,
-  },
-  not_mine: {
     alignSelf: 'flex-end',
     marginRight: 20,
+  },
+  not_mine: {
+    marginLeft: 20,
   },
   cloud: {
     maxWidth: moderateScale(250, 2),

@@ -39,3 +39,16 @@ export const sendPersonalMessage = (token, data) => {
     }),
   };
 };
+
+export const readMessage = (token, receiver_id) => {
+  return {
+    type: 'READ',
+    payload: axios({
+      method: 'PUT',
+      url: API_URL + 'message/' + receiver_id,
+      headers: {
+        Authorization: token,
+      },
+    }),
+  };
+};

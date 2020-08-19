@@ -69,6 +69,26 @@ const message = (state = initialState, action) => {
         isError: false,
         data: action.payload.data.data[0],
       };
+    case 'READ_PENDING':
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case 'READ_REJECTED':
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+        errorMsg: 'Data Reject',
+      };
+    case 'READ_FULFILLED':
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload.data.data[0],
+      };
     default:
       return state;
   }

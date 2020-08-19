@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import {TouchableOpacity, View, Text, StyleSheet, Alert} from 'react-native';
 import {Form, Input, Button, Item, Toast} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {connect} from 'react-redux';
@@ -13,10 +13,8 @@ class RegisterScreen extends Component {
   };
   regUser = (e) => {
     if (this.state.username === '' || this.state.password === '') {
-      Toast.show({
-        text: 'Username or Password is Required',
-        type: 'danger',
-        position: 'bottom',
+      Alert.alert('Register', 'Username or Password Invalid', [{text: 'Ok'}], {
+        cancelable: false,
       });
     } else {
       e.preventDefault();
@@ -28,20 +26,21 @@ class RegisterScreen extends Component {
         .dispatch(register(data))
         .then((res) => {
           console.log(res);
-          Toast.show({
-            text: 'Success',
-            position: 'bottom',
-            type: 'success',
+          Alert.alert('Register', 'Success', [{text: 'Ok'}], {
+            cancelable: false,
           });
           this.props.navigation.replace('Login');
         })
         .catch((err) => {
           console.log(err);
-          Toast.show({
-            text: 'Something Wrong',
-            position: 'bottom',
-            type: 'danger',
-          });
+          Alert.alert(
+            'Register',
+            'Something Wrong I can Feel It',
+            [{text: 'Ok'}],
+            {
+              cancelable: false,
+            },
+          );
         });
     }
   };

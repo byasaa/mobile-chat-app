@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet, Image} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+} from 'react-native';
 import {
   Container,
   Header,
@@ -55,10 +62,8 @@ class EditProfileScreen extends Component {
       .dispatch(editProfile(formData, token, id))
       .then(async (res) => {
         console.log(res);
-        await Toast.show({
-          text: 'Success',
-          type: 'success',
-          position: 'top',
+        await Alert.alert('Edit Profile', 'Success', [{text: 'Ok'}], {
+          cancelable: false,
         });
         this.props.navigation.replace('Home', {
           screen: 'User',
@@ -66,10 +71,8 @@ class EditProfileScreen extends Component {
       })
       .catch((err) => {
         console.warn(JSON.stringify(err));
-        Toast.show({
-          text: err.message,
-          type: 'danger',
-          position: 'bottom',
+        Alert.alert('Edit Profile', 'Fail', [{text: 'Ok'}], {
+          cancelable: false,
         });
       });
   };

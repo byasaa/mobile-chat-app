@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import {Alert, View, Text, StyleSheet} from 'react-native';
 import {
   Container,
   Header,
@@ -17,11 +17,16 @@ import {
 } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {connect} from 'react-redux';
-import {getAllFriend} from '../redux/actions/friend';
+import {getAllFriend, searchUser, addFriend} from '../redux/actions/friend';
+import {API_URL} from '@env';
 
 class FriendScreen extends Component {
   state = {
     friends: [],
+    users: [],
+    search: '',
+    searchStore: '',
+    isLoading: true,
   };
   getAllFriendData = async () => {
     const token = this.props.auth.data.token;
@@ -40,6 +45,45 @@ class FriendScreen extends Component {
           isLoading: false,
         });
       });
+  };
+  onSearch = async () => {
+    await this.setState({
+      isLoading: true,
+      search: this.state.searchStore,
+    });
+    const token = this.props.auth.data.token;
+    const {search} = this.state;
+    this.props
+      .dispatch(searchUser(token, search))
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          users: res.action.payload.data.data,
+          isLoading: false,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({
+          isLoading: false,
+          users: [],
+        });
+      });
+  };
+  addFriend = async (friendId) => {
+    await this.setState({
+      isLoading: true,
+    });
+    const token = this.props.auth.data.token;
+    this.props
+      .dispatch(addFriend(token, friendId))
+      .then(() => {
+        this.getAllFriendData()
+        Alert.alert('Add Friend', 'Success', [{text: 'Ok'}], {
+          cancelable: false,
+        });
+      })
+      .catch((err) => console.log(err));
   };
   componentDidMount = () => {
     this.getAllFriendData();
@@ -77,9 +121,59 @@ class FriendScreen extends Component {
               marginBottom: 20,
             }}>
             <Icon name="search" size={18} />
-            <Input placeholder="Search" />
+            <Input
+              placeholder="Search User"
+              onChangeText={(val) => this.setState({searchStore: val})}
+              onSubmitEditing={() => this.onSearch()}
+              defaultValue=""
+            />
           </Item>
-          <View style={{marginLeft: 20}}>
+          {this.state.search !== '' ? (
+            <>
+              <View style={{marginLeft: 20}}>
+                <Text style={{fontSize: 30}}>
+                  Result of '{this.state.search}'
+                </Text>
+              </View>
+            </>
+          ) : null}
+          <List>
+            {this.state.users.map((user) => {
+              return (
+                <View key={user.id}>
+                  <ListItem thumbnail>
+                    <Left>
+                      {user.image == 'null' ? (
+                        <Thumbnail
+                          square
+                          source={require('../assets/images/avatar.jpg')}
+                        />
+                      ) : (
+                        <Thumbnail
+                          square
+                          source={{uri: API_URL + 'img/' + user.image}}
+                        />
+                      )}
+                    </Left>
+                    <Body>
+                      <Text>{user.name}</Text>
+                      <Text note numberOfLines={1}>
+                        {user.about}
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Button
+                        transparent
+                        onPress={() => this.addFriend(user.id)}>
+                        <Icon name="user-plus" size={16} />
+                      </Button>
+                    </Right>
+                  </ListItem>
+                </View>
+              );
+            })}
+          </List>
+          <View style={{marginLeft: 20, marginBottom: 20}}>
             <Text style={{fontSize: 30}}>Friend List</Text>
           </View>
           <List>
@@ -88,10 +182,17 @@ class FriendScreen extends Component {
                 <View key={key}>
                   <ListItem thumbnail>
                     <Left>
-                      <Thumbnail
-                        square
-                        source={require('../assets/images/avatar.jpg')}
-                      />
+                      {friend.image == 'null' ? (
+                        <Thumbnail
+                          square
+                          source={require('../assets/images/avatar.jpg')}
+                        />
+                      ) : (
+                        <Thumbnail
+                          square
+                          source={{uri: API_URL + 'img/' + friend.image}}
+                        />
+                      )}
                     </Left>
                     <Body>
                       <Text>{friend.name}</Text>

@@ -22,6 +22,7 @@ import {connect} from 'react-redux';
 import {
   getPersonalMessage,
   sendPersonalMessage,
+  readMessage,
 } from '../redux/actions/message';
 import io from 'socket.io-client';
 import {API_URL} from '@env';
@@ -60,19 +61,36 @@ class ChatScreen extends Component {
       .dispatch(sendPersonalMessage(token, data))
       .then((res) => {
         console.log(res);
+        this.setState({
+          message: '',
+        });
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  componentDidMount = () => {
-    this.getPersonalMessage();
-    this.socket = io('http://192.168.43.248:3000/');
+  readAllMessage = (receiver_id) => {
+    this.props.dispatch(readMessage(this.props.auth.data.token, receiver_id));
+  };
+  componentDidMount = async () => {
+    await this.getPersonalMessage();
+    this.socket = io(`${API_URL}`);
     this.socket.on('personal-message', (data) => {
       console.log(data);
-      this.setState({messages: [...this.state.messages, data]});
+      if (
+        data.receiver_id == this.props.route.params.id &&
+        data.sender_id == this.props.auth.data.id
+      ) {
+        this.setState({messages: [...this.state.messages, data]});
+      } else if (
+        data.sender_id == this.props.route.params.id &&
+        data.receiver_id == this.props.auth.data.id
+      ) {
+        this.setState({messages: [...this.state.messages, data]});
+      }
     });
     // this.receiver_id = this.props.route.params.id;
+    this.readAllMessage(this.props.route.params.id);
     // this.sender_id = this.props.auth.data.id;
   };
   componentWillUnmount = () => {
@@ -121,6 +139,7 @@ class ChatScreen extends Component {
               placeholder="Type Something..."
               onChangeText={(val) => this.setState({message: val})}
               onSubmitEditing={this.onSendMessage}
+              defaultValue=""
             />
             <Button
               danger

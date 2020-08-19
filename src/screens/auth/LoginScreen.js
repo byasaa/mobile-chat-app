@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import {TouchableOpacity, View, Text, StyleSheet, Alert} from 'react-native';
 import {Form, Input, Button, Item, Toast} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {connect} from 'react-redux';
@@ -29,10 +29,8 @@ class LoginScreen extends Component {
         .dispatch(login(data))
         .then(async (res) => {
           console.log(res);
-          Toast.show({
-            text: 'Success',
-            type: 'success',
-            position: 'top',
+          Alert.alert('Login', 'Success', [{text: 'Ok'}], {
+            cancelable: false,
           });
           await this.props
             .dispatch(
@@ -41,9 +39,9 @@ class LoginScreen extends Component {
                 res.action.payload.data.data[0].id,
               ),
             )
-            .then((res) => {
-              console.log(res);
-              if (res.action.payload.data.data[0]) {
+            .then((resp) => {
+              console.log(resp);
+              if (resp.action.payload.data.data[0]) {
                 this.props.navigation.replace('Home');
               } else {
                 this.props.navigation.replace('AddProfile');
@@ -52,10 +50,8 @@ class LoginScreen extends Component {
         })
         .catch((err) => {
           console.log(err);
-          Toast.show({
-            text: 'Username or Password is Invalid',
-            type: 'danger',
-            position: 'bottom',
+          Alert.alert('Login', 'Username or Password Invalid', [{text: 'Ok'}], {
+            cancelable: false,
           });
         });
     }
